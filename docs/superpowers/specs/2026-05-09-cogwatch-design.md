@@ -186,6 +186,15 @@ Deployed via InsForge with built-in auth.
 
 **Execution:** Python script run before demo. Results logged to MLflow, shown as a dashboard tab or presentation slide.
 
+## Required Agent Skills
+
+The following skills are available and should be used during implementation:
+
+| Skill | Purpose |
+|-------|---------|
+| `tensorlake` | Tensorlake SDK — sandboxes, durable workflow orchestration, cron scheduling, deployment. Use for building the background agent. Always WebFetch `https://docs.tensorlake.ai/llms.txt` first. |
+| `insforge` | InsForge backend platform — database, auth, storage, edge functions, deployment. Use for building the web dashboard, API, and PostgreSQL decision store. |
+
 ## Key Design Decisions
 
 1. **Background + memory are both load-bearing** — remove the cron and detection never triggers; remove the decision store and the agent has no history to compare against
