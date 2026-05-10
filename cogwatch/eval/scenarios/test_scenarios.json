@@ -1,0 +1,92 @@
+[
+  {
+    "id": "contradiction_rest_graphql",
+    "old_decision": "Decided to use REST API for all backend services. REST is simpler, better tooling, team knows it well.",
+    "new_activity": "Going with GraphQL for the new API layer. Need flexible querying and the frontend team wants to avoid over-fetching.",
+    "expected_contradiction": true,
+    "expected_severity": "high",
+    "expected_type": "direct_contradiction",
+    "notes": "Clear architectural reversal on API technology choice"
+  },
+  {
+    "id": "contradiction_postgres_mongo",
+    "old_decision": "We're using PostgreSQL for everything. Relational model fits our domain perfectly. NoSQL would fragment our data model.",
+    "new_activity": "Adding MongoDB for the event store. PostgreSQL can't handle the write throughput we need for real-time events.",
+    "expected_contradiction": true,
+    "expected_severity": "medium",
+    "expected_type": "direct_contradiction",
+    "notes": "Partial contradiction — adding NoSQL alongside, not replacing"
+  },
+  {
+    "id": "contradiction_monolith_microservice",
+    "old_decision": "Keeping everything in the monolith for now. Microservices are premature optimization.",
+    "new_activity": "Extracting the notification service into its own microservice. The monolith is getting too large.",
+    "expected_contradiction": true,
+    "expected_severity": "medium",
+    "expected_type": "direct_contradiction",
+    "notes": "Architectural shift from monolith to microservices"
+  },
+  {
+    "id": "forgotten_auth_question",
+    "old_decision": "After researching auth solutions, decided on JWT with refresh tokens stored in httpOnly cookies.",
+    "new_activity": "What's the best approach for authentication? Should we use sessions or JWTs? Need to figure out token storage.",
+    "expected_contradiction": true,
+    "expected_severity": "low",
+    "expected_type": "forgotten_resolution",
+    "notes": "Re-asking a question that was already resolved"
+  },
+  {
+    "id": "not_contradiction_typescript",
+    "old_decision": "Using TypeScript for all new frontend code. Type safety catches bugs early.",
+    "new_activity": "Migrated the dashboard components to TypeScript. Follows our established standard.",
+    "expected_contradiction": false,
+    "expected_severity": null,
+    "expected_type": null,
+    "notes": "Consistent follow-through, not a contradiction"
+  },
+  {
+    "id": "not_contradiction_testing",
+    "old_decision": "All new features must have unit tests with >80% coverage before merge.",
+    "new_activity": "Added comprehensive unit tests for the payment module. Coverage at 92%.",
+    "expected_contradiction": false,
+    "expected_severity": null,
+    "expected_type": null,
+    "notes": "Following established testing standards"
+  },
+  {
+    "id": "not_contradiction_evolution",
+    "old_decision": "Starting with a simple key-value cache for session data.",
+    "new_activity": "Upgrading the cache to Redis Cluster for better availability and data persistence.",
+    "expected_contradiction": false,
+    "expected_severity": null,
+    "expected_type": null,
+    "notes": "Natural evolution, not contradiction"
+  },
+  {
+    "id": "contradiction_deployment_strategy",
+    "old_decision": "We'll deploy on AWS with ECS Fargate. Serverless containers give us the right balance of control and simplicity.",
+    "new_activity": "Moving everything to Vercel and serverless functions. AWS infrastructure is too complex to manage as a small team.",
+    "expected_contradiction": true,
+    "expected_severity": "high",
+    "expected_type": "direct_contradiction",
+    "notes": "Complete infrastructure strategy reversal"
+  },
+  {
+    "id": "stale_thread_caching",
+    "old_decision": "TODO: Need to decide on caching strategy. Redis vs Memcached. Will think about this after auth is done.",
+    "new_activity": "Auth system is complete and deployed. Moving on to the payments integration.",
+    "expected_contradiction": true,
+    "expected_severity": "low",
+    "expected_type": "stale_thread",
+    "notes": "Deferred decision that was never revisited after precondition was met"
+  },
+  {
+    "id": "not_contradiction_refinement",
+    "old_decision": "Using React for the frontend with a component library approach.",
+    "new_activity": "Adopting Radix UI primitives for our React component library. Better accessibility out of the box.",
+    "expected_contradiction": false,
+    "expected_severity": null,
+    "expected_type": null,
+    "notes": "Refinement within the same technology choice"
+  }
+]
