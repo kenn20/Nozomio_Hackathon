@@ -10,6 +10,7 @@ class DecisionSource(str, Enum):
     OBSIDIAN = "obsidian"
     GITHUB = "github"
     CLAUDE_SESSION = "claude_session"
+    GMAIL = "gmail"
 
 
 class DecisionStatus(str, Enum):

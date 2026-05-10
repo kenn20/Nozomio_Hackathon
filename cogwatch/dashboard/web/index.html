@@ -76,6 +76,33 @@
             </div>
           </section>
           <section class="settings-section">
+            <h3>Connected Accounts</h3>
+            <p class="section-desc">Connect your accounts to let CogWatch monitor decisions from Gmail, Google Drive, and GitHub.</p>
+            <div id="connected-accounts">
+              <div class="connect-row">
+                <div class="connect-info">
+                  <span class="connect-icon">📧</span>
+                  <div>
+                    <strong>Gmail</strong>
+                    <p class="section-desc" style="margin:0">Monitor email threads for decisions and context</p>
+                  </div>
+                </div>
+                <button class="action-btn primary" id="btn-connect-accounts" onclick="connectHyperspell()">Connect Accounts</button>
+              </div>
+            </div>
+          </section>
+          <section class="settings-section">
+            <h3>Memory Search</h3>
+            <p class="section-desc">Search across all connected memories (Gmail, Drive, GitHub) for past decisions and context.</p>
+            <div class="setting-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="memory-search-input" placeholder="Search your memories..." style="flex:1; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-primary); font-size: 14px;">
+                <button class="action-btn primary" onclick="searchHyperspellMemories()">Search</button>
+              </div>
+              <div id="memory-search-results"></div>
+            </div>
+          </section>
+          <section class="settings-section">
             <h3>Detection Settings</h3>
             <div class="setting-row">
               <label for="threshold">Similarity Threshold</label>

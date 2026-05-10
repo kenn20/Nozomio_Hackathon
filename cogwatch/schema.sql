@@ -8,7 +8,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 -- 2. Decision records table
 CREATE TABLE IF NOT EXISTS decision_records (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    source TEXT NOT NULL CHECK (source IN ('obsidian', 'github', 'claude_session')),
+    source TEXT NOT NULL CHECK (source IN ('obsidian', 'github', 'claude_session', 'gmail')),
     content TEXT NOT NULL,
     context TEXT NOT NULL DEFAULT '',
     timestamp TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -98,5 +98,5 @@ ON CONFLICT DO NOTHING;
 -- 10. Seed default settings
 INSERT INTO settings (key, value) VALUES
 ('detection_threshold', '0.75'),
-('connected_sources', '{"obsidian": {"enabled": false, "vault_path": ""}, "github": {"enabled": false, "repos": []}, "claude": {"enabled": false, "paths": []}}')
+('connected_sources', '{"obsidian": {"enabled": false, "vault_path": ""}, "github": {"enabled": false, "repos": []}, "claude": {"enabled": false, "paths": []}, "gmail": {"enabled": false, "provider": "hyperspell"}}')
 ON CONFLICT DO NOTHING;

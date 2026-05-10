@@ -17,6 +17,23 @@ from cogwatch.models import (
 logger = logging.getLogger(__name__)
 
 
+def _search_hyperspell_context(user_id: str, query: str) -> str | None:
+    """Search Hyperspell memories (Gmail, Drive, etc.) for additional context.
+
+    Returns a text summary from connected accounts, or None if unavailable.
+    """
+    try:
+        from cogwatch.hyperspell_client import search_memories
+
+        result = search_memories(user_id, query, answer=True)
+        if hasattr(result, "answer") and result.answer:
+            return result.answer
+        return None
+    except Exception as e:
+        logger.debug("Hyperspell search unavailable: %s", e)
+        return None
+
+
 def detect_contradictions(new_record: DecisionRecord) -> Alert | None:
     """Check a new decision record against history for contradictions.
 
@@ -56,8 +73,18 @@ def detect_contradictions(new_record: DecisionRecord) -> Alert | None:
                 result.explanation[:100],
             )
 
+            # Enrich with Hyperspell context from Gmail/Drive if available
+            hyperspell_context = _search_hyperspell_context(
+                user_id="default-user",  # TODO: pass real user ID
+                query=f"{new_record.content} {past_decision['content'][:200]}",
+            )
+            if hyperspell_context:
+                logger.info("Enriched with Hyperspell context from connected accounts")
+
             # Generate persona advisory
-            persona_responses = _generate_advisory(new_record, past_decision, similar)
+            persona_responses = _generate_advisory(
+                new_record, past_decision, similar, hyperspell_context
+            )
 
             alert = Alert(
                 old_decision_id=past_decision["id"],
@@ -104,6 +131,7 @@ def _generate_advisory(
     new_record: DecisionRecord,
     old_decision: dict,
     related_decisions: list[dict],
+    hyperspell_context: str | None = None,
 ) -> list[PersonaResponse]:
     """Generate multi-persona advisory for a detected contradiction."""
     personas = get_active_personas()
@@ -114,6 +142,10 @@ def _generate_advisory(
     related_contents = [
         d["content"] for d in related_decisions[:5] if d["id"] != old_decision["id"]
     ]
+    # Include Hyperspell context (from Gmail, Drive, etc.) if available
+    if hyperspell_context:
+        related_contents.append(f"[From connected accounts] {hyperspell_context}")
+
     responses: list[PersonaResponse] = []
 
     for persona in personas:

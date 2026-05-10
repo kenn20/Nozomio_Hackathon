@@ -20,5 +20,8 @@ INSFORGE_ANON_KEY = os.environ.get("INSFORGE_ANON_KEY", "")
 # GitHub config
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 
+# Hyperspell config (Gmail, Drive, GitHub memory ingestion)
+HYPERSPELL_API_KEY = os.environ.get("HYPERSPELL_API_KEY", "")
+
 # Judge model (Gemini via OpenRouter for eval)
 JUDGE_MODEL = "google/gemini-2.5-flash"

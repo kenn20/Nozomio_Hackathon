@@ -1,8 +1,8 @@
 """CogWatch Tensorlake Agent — background cron agent for context rot detection.
 
 Deployed to Tensorlake, scheduled via cron (every 15 minutes).
-Ingests from Obsidian, GitHub, and Claude Code sessions, then runs
-contradiction detection + persona advisory.
+Ingests from Obsidian, GitHub, Claude Code sessions, and Gmail (via Hyperspell),
+then runs contradiction detection + persona advisory.
 """
 
 import logging
@@ -13,6 +13,7 @@ from tensorlake.applications import Image, Retries, application, function
 
 from cogwatch.agent.extractors.claude_sessions import extract_from_claude_sessions
 from cogwatch.agent.extractors.github import extract_from_github
+from cogwatch.agent.extractors.gmail import extract_gmail_decisions
 from cogwatch.agent.extractors.obsidian import extract_from_vault
 from cogwatch.db import store_decision
 from cogwatch.detection.engine import detect_contradictions
@@ -23,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 # Custom image with our dependencies
 cogwatch_image = Image(name="cogwatch-agent").run(
-    "pip install httpx psycopg2-binary openai pydantic GitPython"
+    "pip install httpx psycopg2-binary openai pydantic GitPython hyperspell"
 )
 
 
@@ -42,6 +43,7 @@ cogwatch_image = Image(name="cogwatch-agent").run(
         "INSFORGE_DB_NAME",
         "INSFORGE_DB_USER",
         "INSFORGE_DB_PASSWORD",
+        "HYPERSPELL_API_KEY",
     ],
     description="Ingest decisions from all sources and run contradiction detection",
 )
@@ -84,7 +86,15 @@ def cogwatch_ingest(config: dict | None = None) -> dict:
         records = extract_from_claude_sessions(path, since=since)
         all_records.extend(records)
 
-    # 4. Process each record: embed, store, detect
+    # 4. Extract from Gmail via Hyperspell
+    if os.environ.get("HYPERSPELL_API_KEY"):
+        logger.info("Extracting from Gmail via Hyperspell")
+        gmail_records = extract_gmail_decisions(
+            user_id=config.get("hyperspell_user_id", "default-user")
+        )
+        all_records.extend(gmail_records)
+
+    # 5. Process each record: embed, store, detect
     for record in all_records:
         try:
             # Generate embedding

@@ -8,7 +8,7 @@
 
 CogWatch is an always-on background agent that:
 
-1. **Ingests** your activity from Obsidian notes, GitHub repos, and Claude Code sessions
+1. **Ingests** your activity from Obsidian notes, GitHub repos, Claude Code sessions, and **Gmail** (via Hyperspell)
 2. **Detects** when you're contradicting past decisions, re-asking solved questions, or abandoning threads
 3. **Advises** via configurable personas (default: Elon Musk + Jensen Huang) grounded in YOUR specific history
 4. **Surfaces** alerts on a web dashboard with actionable resolution options
@@ -16,13 +16,13 @@ CogWatch is an always-on background agent that:
 ## Architecture
 
 ```
-Data Sources (Obsidian, GitHub, Claude Sessions)
+Data Sources (Obsidian, GitHub, Claude Sessions, Gmail via Hyperspell)
     → Tensorlake Cron Agent (every 15 min)
     → Decision Extraction (pattern + LLM classification)
     → InsForge PostgreSQL + pgvector (decision records with embeddings)
-    → Contradiction Detection (cosine similarity → LLM confirm)
-    → Multi-Persona Advisory (configurable personas)
-    → InsForge Web Dashboard (alert feed + decision timeline + settings)
+    → Contradiction Detection (cosine similarity → LLM confirm + Hyperspell memory search)
+    → Multi-Persona Advisory (configurable personas, enriched with Gmail context)
+    → InsForge Web Dashboard (alert feed + decision timeline + account connection + memory search)
 ```
 
 ## Tech Stack
@@ -35,6 +35,7 @@ Data Sources (Obsidian, GitHub, Claude Sessions)
 | LLM inference | OpenRouter → `nvidia/nemotron-3-super-120b-a12b:free` |
 | Embeddings | OpenRouter embedding model |
 | Eval framework | MLflow + LLM-as-Judge |
+| Memory platform | Hyperspell (Gmail, Google Drive, GitHub ingestion) |
 
 ## Setup
 
@@ -45,6 +46,7 @@ Data Sources (Obsidian, GitHub, Claude Sessions)
 - Tensorlake API key ([console.tensorlake.ai](https://console.tensorlake.ai))
 - InsForge account ([insforge.dev](https://insforge.dev))
 - OpenRouter API key ([openrouter.ai](https://openrouter.ai))
+- Hyperspell API key ([app.hyperspell.com](https://app.hyperspell.com/api-keys))
 
 ### Install Dependencies
 
@@ -58,6 +60,7 @@ pip install -e .
 export TENSORLAKE_API_KEY=your-key
 export OPENROUTER_API_KEY=your-key
 export ANTHROPIC_API_KEY=your-key  # for MLflow eval only
+export HYPERSPELL_API_KEY=your-key  # for Gmail/Drive ingestion via Hyperspell
 ```
 
 ### InsForge Setup
@@ -79,7 +82,7 @@ tl deploy cogwatch/agent/main.py
 cogwatch/
 ├── agent/              # Tensorlake cron agent
 │   ├── main.py         # Entry point (@application + @function)
-│   └── extractors/     # Obsidian, GitHub, Claude session extractors
+│   └── extractors/     # Obsidian, GitHub, Claude session, Gmail (Hyperspell) extractors
 ├── detection/          # Contradiction detection engine
 ├── advisory/           # Multi-persona advisory engine
 ├── dashboard/          # InsForge web dashboard
@@ -98,6 +101,7 @@ cogwatch/
 4. Show decision timeline — unified view across all sources
 5. Show MLflow results — detection accuracy on benchmark scenarios
 6. Swap persona live — edit prompt, re-run advisory
+7. Connect Gmail — OAuth flow via Hyperspell, search memories from email
 
 ## License
 

@@ -342,5 +342,84 @@ function renderDemoPersonas() {
   return personas.map(renderPersonaEdit).join('');
 }
 
+// Hyperspell Integration
+async function connectHyperspell() {
+  const btn = document.getElementById('btn-connect-accounts');
+  btn.textContent = 'Connecting...';
+  btn.disabled = true;
+
+  try {
+    // TODO: Replace 'default-user' with real user ID when auth is added
+    const userId = 'default-user';
+
+    if (!API_BASE) {
+      alert('Demo mode: In production, this would redirect to Hyperspell Connect to authorize Gmail, Google Drive, and GitHub.');
+      btn.textContent = 'Connect Accounts';
+      btn.disabled = false;
+      return;
+    }
+
+    const res = await fetch(`${API_BASE}/hyperspell-token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId })
+    });
+    const { token, error } = await res.json();
+
+    if (error) {
+      console.error('Token error:', error);
+      alert('Failed to connect. Check that HYPERSPELL_API_KEY is configured.');
+      btn.textContent = 'Connect Accounts';
+      btn.disabled = false;
+      return;
+    }
+
+    const redirectUri = window.location.href;
+    window.location.href = `https://connect.hyperspell.com?token=${token}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  } catch (err) {
+    console.error('Failed to connect Hyperspell:', err);
+    alert('Failed to connect. Please try again.');
+    btn.textContent = 'Connect Accounts';
+    btn.disabled = false;
+  }
+}
+
+async function searchHyperspellMemories() {
+  const input = document.getElementById('memory-search-input');
+  const resultsContainer = document.getElementById('memory-search-results');
+  const query = input.value.trim();
+
+  if (!query) return;
+
+  resultsContainer.innerHTML = '<div class="loading">Searching memories...</div>';
+
+  if (!API_BASE) {
+    // Demo mode: show mock results
+    resultsContainer.innerHTML = `
+      <div class="memory-answer">
+        <div class="memory-answer-label">AI Answer from Memories</div>
+        <div class="memory-answer-text">Based on your Gmail threads and documents, the team decided on REST APIs in the March architecture review. However, the frontend team raised concerns about over-fetching in a subsequent email thread.</div>
+      </div>
+      <div class="memory-result">
+        <div class="memory-result-title">📧 Architecture Review — March 15</div>
+        <div class="memory-result-text">Team agreed on REST for simplicity. Key point: "We know REST, the tooling is mature, and it fits our use case."</div>
+      </div>
+      <div class="memory-result">
+        <div class="memory-result-title">📧 Frontend Performance Discussion — April 2</div>
+        <div class="memory-result-text">Frontend team flagged over-fetching issues: "We're making 5 REST calls per page load. GraphQL would let us fetch exactly what we need."</div>
+      </div>
+    `;
+    return;
+  }
+
+  try {
+    // TODO: Replace with real search endpoint when available
+    resultsContainer.innerHTML = '<div class="empty-state"><p>Connect your accounts first to search memories.</p></div>';
+  } catch (err) {
+    console.error('Memory search failed:', err);
+    resultsContainer.innerHTML = '<div class="empty-state"><p>Search failed. Please try again.</p></div>';
+  }
+}
+
 // Initialize
 loadAlerts();

@@ -416,3 +416,73 @@ body {
 }
 
 .empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(--text-secondary); }
+
+/* Connected Accounts */
+.connect-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.connect-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.connect-icon {
+  font-size: 24px;
+}
+
+/* Memory Search Results */
+#memory-search-results {
+  margin-top: 8px;
+}
+
+.memory-result {
+  padding: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+
+.memory-result-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-blue);
+  margin-bottom: 4px;
+}
+
+.memory-result-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.memory-answer {
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--accent-purple);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+}
+
+.memory-answer-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent-purple);
+  margin-bottom: 6px;
+}
+
+.memory-answer-text {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
